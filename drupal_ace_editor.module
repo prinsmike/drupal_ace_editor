@@ -230,7 +230,7 @@ function drupal_ace_editor_ace_modes() {
 /**
  * Implements hook_INCLUDE_plugins().
  */
-function wysiwyg_ace_plugins($editor) {
+function drupal_ace_editor_ace_plugins($editor) {
   return array(
     'default' => array(
       'buttons' => array(
@@ -250,7 +250,7 @@ function wysiwyg_ace_plugins($editor) {
 /**
  * Implements hook_form_alter(). 
  */
-function acedit_form_alter(&$form, &$form_state, $form_id) {
+function drupal_ace_editor_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'css_injector_edit') {
     $form['css_text']['#type'] = 'text_format';
   }
