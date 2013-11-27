@@ -159,7 +159,7 @@ function drupal_ace_editor_ace_settings_form(&$form, &$form_state) {
   $form['basic']['mode'] = array(
     '#type' => 'select',
     '#title' => t('This determines the syntax highlighting scheme and autocompletion behavior.'),
-    '#options' => drupal_ace_editor_ace_modes();
+    '#options' => drupal_ace_editor_ace_modes(),
     '#default_value' => (!empty($profile->settings['mode'])) ? $profile->settings['mode'] : 'html',
     );
   $form['basic']['tab_size'] = array(
