@@ -1,0 +1,260 @@
+<?php
+
+/**
+ * Implements hook_help().
+ */
+function drupal_ace_editor_help($path, $arg) {
+  if ($path == 'admin/help#drupal-ace-editor') {
+    return t('Integrates the Ace Editor with Drupal.');
+  }
+}
+
+/**
+ * Implements hook_INCLUDE_editor().
+ */
+function drupal_ace_editor_ace_editor() {
+  $editor['ace'] = array(
+    'title' => 'Ace (Ajax.org Cloud9 Editor)',
+    'vendor url' => 'http://ace.ajax.org',
+    'download url' => 'http://github.com/ajaxorg/ace-builds/',
+    'library path' => wysiwyg_get_path('ace'),
+    'libraries' => array(
+      'src-min-noconflict' => array(
+        'title' => 'Minified, no conflict',
+        'files' => array(
+          'src-min-noconflict/ace.js' => array('preprocess' => FALSE),
+          ),
+        ),
+      'src-noconflict' => array(
+        'title' => 'No conflict',
+        'files' => array(
+          'src-noconflict/ace.js' => array('preprocess' => FALSE),
+          ),
+        ),
+      'src-min' => array(
+        'title' => 'Minified',
+        'files' => array(
+          'src-min/ace.js' => array('preprocess' => FALSE),
+          ),
+        ),
+      'src' => array(
+        'title' => 'Source',
+        'files' => array(
+          'src/ace.js' => array('preprocess' => FALSE),
+          ),
+        ),
+      ),
+    'version callback' => 'drupal_ace_editor_ace_version',
+    'themes callback' => 'drupal_ace_editor_ace_themes',
+    'settings form callback' => 'drupal_ace_editor_ace_settings_form',
+    'settings callback' => 'drupal_ace_editor_ace_settings',
+    'plugin callback' => 'drupal_ace_editor_ace_plugins',
+    'versions' => array(
+      '0.2.0' => array(
+        'js files' => array('ace.js'),
+        'css files' => array('ace.css'),
+        ),
+      ),
+    );
+  return $editor;
+}
+
+/**
+ * Version callback for drupal_ace_editor_ace_editor().
+ */
+function drupal_ace_editor_ace_version($editor) {
+  $changelog = $editor['library path'] . '/Changelog.txt';
+  $changelog = fopen($changelog, 'r');
+  $line = fgets($changelog);
+  if (preg_match('@Version ([0-9\.]+)@', $line, $version)) {
+    fclose($changelog);
+    return $version[1];
+  }
+  fclose($changelog);
+}
+
+/**
+ * Themes callback for drupal_ace_editor_ace_editor().
+ */
+function drupal_ace_editor_ace_themes() {
+  $themes = drupal_ace_editor_ace_themes_rich();
+  return array_keys($themes);
+}
+
+/**
+ * Returns a rich list of available themes.
+ *
+ * @return array
+ *   An array of available themes suitable for Form API select element options.
+ *
+ */
+function drupal_ace_editor_ace_themes_rich() {
+  return array(
+    'ambiance' => t('Ambiance'),
+    'chrome' => t('Chrome'),
+    'clouds' => t('Clouds'),
+    'clouds_midnight' => t('Clouds Midnight'),
+    'cobalt' => t('Cobalt'),
+    'crimson_editor' => t('Crimson Editor'),
+    'dawn' => t('Dawn'),
+    'dreamweaver' => t('Dreamweaver'),
+    'eclipse' => t('Eclipse'),
+    'github' => t('GitHub'),
+    'idle_fingers' => t('idleFingers'),
+    'kr_theme' => t('krTheme'),
+    'merbivore' => t('Merbivore'),
+    'merbivore_soft' => t('Merbivore Soft'),
+    'mono_industrial' => t('Mono Industrial'),
+    'monokai' => t('Monokai'),
+    'pastel_on_dark' => t('Pastel on Dark'),
+    'solarized_dark' => t('Solarized Dark'),
+    'solarized_light' => t('Solarized Light'),
+    'textmate' => t('TextMate'),
+    'tomorrow' => t('Tomorrow'),
+    'tomorrow_night' => t('Tomorrow Night'),
+    'tomorrow_night_blue' => t('Tomorrow Night Blue'),
+    'tomorrow_night_bright' => t('Tomorrow Night Bright'),
+    'tomorrow_night_eighties' => t('Tomorrow Night 80s'),
+    'twilight' => t('Twilight'),
+    'vibrant_ink' => t('Vibrant Ink'),
+    'xcode' => t('XCode'),
+    );
+}
+
+/**
+ * Settings callback or drupal_ace_editor_ace_editor().
+ */
+function drupal_ace_editor_ace_settings($editor, $config, $theme) {
+  $settings = array(
+    'mode' => 'ace/mode/' . ((!empty($config['mode'])) ? $config['mode'] : 'html'),
+    'tab_size' => (!empty($config['tab_size'])) ? (int) $config['tab_size'] : 2,
+    'theme' => 'ace/theme/' . $theme,
+    );
+  if  (!empty($config['buttons']['default'])) {
+    foreach ($config['buttons']['default'] as $seting => $value) {
+      $settings[$setting] = $value;
+    }
+  }
+  return $settings;
+}
+
+/**
+ * Settings form callback for drupal_ace_editor_ace_editor().
+ */
+function drupal_ace_editor_ace_settings_form(&$form, &$form_state) {
+  // These settings don't make sense for ACE.
+  $form['appearance']['#access'] = FALSE;
+  $form['output']['#access'] = FALSE;
+  $form['css']['#access'] = FALSE;
+  $form['basic']['language']['#access'] = FALSE;
+
+  $profile = $form_state['wysiwyg_profile'];
+
+  $form['basic']['theme'] = array(
+    '#type' => 'select',
+    '#title' => t('Theme'),
+    '#options' => drupal_ace_editor_ace_themes_rich(),
+    '#default_value' => $profile->settings['theme'],
+    );
+  $form['basic']['mode'] = array(
+    '#type' => 'select',
+    '#title' => t('This determines the syntax highlighting scheme and autocompletion behavior.'),
+    '#options' => drupal_ace_editor_ace_modes();
+    '#default_value' => (!empty($profile->settings['mode'])) ? $profile->settings['mode'] : 'html',
+    );
+  $form['basic']['tab_size'] = array(
+    '#type' => 'select',
+    '#title' => t('Tab size'),
+    '#options' => drupal_map_assoc(array(2, 4, 6, 8)),
+    '#default_value' => (!empty($profile->settings['tab_size'])) ? $profile->settings['tab_size'] : 2,
+    );
+}
+
+/**
+ * Returns a list of available language modes.
+ *
+ * @return array
+ *   An array suitable for Form API select element options.
+ */
+function drupal_ace_editor_ace_modes() {
+  return array(
+    'asciidoc' => t('AsciiDoc'),
+    'c9search' => t('C9Search'),
+    'c_cpp' => t('C/C++'),
+    'clojure' => t('Clojure'),
+    'coffee' => t('CoffeeScript'),
+    'coldfusion' => t('ColdFusion'),
+    'csharp' => t('C#'),
+    'css' => t('CSS'),
+    'diff' => t('Diff'),
+    'glsl' => t('Glsl'),
+    'golang' => t('Go'),
+    'groovy' => t('Groovy'),
+    'haxe' => t('haXe'),
+    'html' => t('HTML'),
+    'jade' => t('Jade'),
+    'java' => t('Java'),
+    'javascript' => t('JavaScript'),
+    'json' => t('JSON'),
+    'jsp' => t('JSP'),
+    'jsx' => t('JSX'),
+    'latex' => t('LaTeX'),
+    'less' => t('LESS'),
+    'liquid' => t('Liquid'),
+    'lua' => t('Lua'),
+    'luapage' => t('LuaPage'),
+    'markdown' => t('Markdown'),
+    'ocaml' => t('OCaml'),
+    'perl' => t('Perl'),
+    'pgsql' => t('pgSQL'),
+    'php' => t('PHP'),
+    'powershell' => t('Powershell'),
+    'python' => t('Python'),
+    'ruby' => t('Ruby'),
+    'scad' => t('OpenSCAD'),
+    'scala' => t('Scala'),
+    'scss' => t('SCSS'),
+    'sh' => t('SH'),
+    'sql' => t('SQL'),
+    'svg' => t('SVG'),
+    'tcl' => t('Tcl'),
+    'text' => t('Text'),
+    'textile' => t('Textile'),
+    'typescript' => t('Typescript'),
+    'xml' => t('XML'),
+    'xquery' => t('XQuery'),
+    'yaml' => t('YAML'),
+  );
+}
+
+/**
+ * Implements hook_INCLUDE_plugins().
+ */
+function wysiwyg_ace_plugins($editor) {
+  return array(
+    'default' => array(
+      'buttons' => array(
+        'highlight_active_line' => t('Highlight active line'),
+        'highlight_selected_word' => t('Highlight selected word'),
+        'show_fold_widgets' => t('Show fold widgets'),
+        'show_invisibles' => t('Show invisible characters'),
+        'show_print_margin' => t('Show print margin'),
+        'use_soft_tabs' => t('Use soft tabs'),
+        'use_wrap_mode' => t('Use word wrap mode'),
+      ),
+      'internal' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter(). 
+ */
+function acedit_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'css_injector_edit') {
+    $form['css_text']['#type'] = 'text_format';
+  }
+  if ($form_id == 'js_injector_edit') {
+    $form['js_text']['#type'] = 'text_format';
+  }
+}
