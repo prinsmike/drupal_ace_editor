@@ -15,9 +15,11 @@ function drupal_ace_editor_help($path, $arg) {
 function drupal_ace_editor_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'css_injector_edit') {
     $form['css_text']['#type'] = 'text_format';
+    $form['css_text']['#format'] = 'css';
   }
   if ($form_id == 'js_injector_edit') {
     $form['js_text']['#type'] = 'text_format';
+    $form['js_text']['#format'] = 'javascript';
   }
 }
 
