@@ -1,5 +1,5 @@
 name = Drupal Ace Editor
-description = Integrates the Ace Editor with Drupal.
+description = Integrates the Ace Editor with CSS Injector and JS Injector.
 package = User interface
 project = "drupal_ace_editor"
 
@@ -7,4 +7,3 @@ core = 7.x
 version = 7.x-1.0-beta1
 
 files[] = drupal_ace_editor.module
-scripts[] = injector.js
