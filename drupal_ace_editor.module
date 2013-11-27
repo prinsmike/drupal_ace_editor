@@ -20,3 +20,174 @@ function drupal_ace_editor_form_alter(&$form, &$form_state, $form_id) {
     $form['js_text']['#type'] = 'text_format';
   }
 }
+
+/**
+ * Implements hook_filter_default_formats().
+ */
+function drupal_ace_editor_filter_default_formats() {
+  $formats = array();
+
+  // Exported format: CSS.
+  $formats['css'] = array(
+    'format' => 'css',
+    'name' => 'CSS',
+    'cache' => 1,
+    'status' => 1,
+    'weight' => -9,
+    'filters' => array(),
+  );
+
+  // Exported format: Javascript.
+  $formats['javascript'] = array(
+    'format' => 'javascript',
+    'name' => 'Javascript',
+    'cache' => 1,
+    'status' => 1,
+    'weight' => -8,
+    'filters' => array(),
+  );
+
+  return $formats;
+}
+
+function drupal_ace_editor_wysiwyg_default_profiles() {
+  $profiles = array();
+
+  // Exported profile: css
+  $profiles['css'] = array(
+    'format' => 'css',
+    'editor' => 'ace',
+    'settings' => array(
+      'default' => 1,
+      'user_choose' => 0,
+      'show_toggle' => 1,
+      'theme' => 'monokai',
+      'language' => 'en',
+      'mode' => 'css',
+      'tab_size' => 2,
+      'buttons' => array(
+        'default' => array(
+          'highlight_active_line' => 1,
+          'highlight_selected_word' => 1,
+          'show_fold_widgets' => 1,
+          'use_wrap_mode' => 1,
+        ),
+      ),
+      'css_setting' => 'theme',
+      'css_path' => '',
+      'advanced__active_tab' => 'edit-basic',
+    ),
+    'rdf_mapping' => array(),
+  );
+
+  // Exported profile: full_html
+  $profiles['full_html'] = array(
+    'format' => 'full_html',
+    'editor' => 'ace',
+    'settings' => array(
+      'default' => 1,
+      'user_choose' => 0,
+      'show_toggle' => 1,
+      'theme' => 'monokai',
+      'language' => 'en',
+      'mode' => 'html',
+      'tab_size' => 2,
+      'buttons' => array(
+        'default' => array(
+          'highlight_active_line' => 1,
+          'highlight_selected_word' => 1,
+          'show_fold_widgets' => 1,
+          'use_wrap_mode' => 1,
+        ),
+      ),
+      'css_setting' => 'theme',
+      'css_path' => '',
+      'advanced__active_tab' => 'edit-basic',
+    ),
+    'rdf_mapping' => array(),
+  );
+
+  // Exported profile: javascript
+  $profiles['javascript'] = array(
+    'format' => 'javascript',
+    'editor' => 'ace',
+    'settings' => array(
+      'default' => 1,
+      'user_choose' => 0,
+      'show_toggle' => 1,
+      'theme' => 'monokai',
+      'language' => 'en',
+      'mode' => 'javascript',
+      'tab_size' => 2,
+      'buttons' => array(
+        'default' => array(
+          'highlight_active_line' => 1,
+          'highlight_selected_word' => 1,
+          'show_fold_widgets' => 1,
+          'use_wrap_mode' => 1,
+        ),
+      ),
+      'css_setting' => 'theme',
+      'css_path' => '',
+      'advanced__active_tab' => 'edit-basic',
+    ),
+    'rdf_mapping' => array(),
+  );
+
+  // Exported profile: php_code
+  $profiles['php_code'] = array(
+    'format' => 'php_code',
+    'editor' => 'ace',
+    'settings' => array(
+      'default' => 1,
+      'user_choose' => 0,
+      'show_toggle' => 1,
+      'theme' => 'monokai',
+      'language' => 'en',
+      'mode' => 'php',
+      'tab_size' => 2,
+      'buttons' => array(
+        'default' => array(
+          'highlight_active_line' => 1,
+          'highlight_selected_word' => 1,
+          'show_fold_widgets' => 1,
+          'show_print_margin' => 1,
+          'use_wrap_mode' => 1,
+        ),
+      ),
+      'css_setting' => 'theme',
+      'css_path' => '',
+      'advanced__active_tab' => 'edit-basic',
+    ),
+    'rdf_mapping' => array(),
+  );
+
+  // Exported profile: plain_text
+  $profiles['plain_text'] = array(
+    'format' => 'plain_text',
+    'editor' => 'ace',
+    'settings' => array(
+      'default' => 1,
+      'user_choose' => 0,
+      'show_toggle' => 1,
+      'theme' => 'monokai',
+      'language' => 'en',
+      'mode' => 'text',
+      'tab_size' => 2,
+      'buttons' => array(
+        'default' => array(
+          'highlight_active_line' => 1,
+          'highlight_selected_word' => 1,
+          'show_fold_widgets' => 1,
+          'use_wrap_mode' => 1,
+        ),
+      ),
+      'css_setting' => 'theme',
+      'css_path' => '',
+      'advanced__active_tab' => 'edit-basic',
+    ),
+    'rdf_mapping' => array(),
+  );
+
+  return $profiles;
+}

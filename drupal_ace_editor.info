@@ -3,6 +3,10 @@ description = Integrates the Ace Editor with CSS Injector and JS Injector.
 package = User interface
 project = "drupal_ace_editor"
 
+dependencies[] = filter
+dependencies[] = php
+dependencies[] = wysiwyg
+
 core = 7.x
 version = 7.x-1.0-beta1
 
