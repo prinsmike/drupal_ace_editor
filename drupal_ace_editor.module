@@ -5,7 +5,7 @@
  */
 function drupal_ace_editor_help($path, $arg) {
   if ($path == 'admin/help#drupal-ace-editor') {
-    return t('Integrates the Cloud9 Ace Editor with CSS Injector and JS Injector.');
+    return t('Integrates the Cloud9 Ace Editor with JS Injector.');
   }
 }
 
@@ -13,10 +13,6 @@ function drupal_ace_editor_help($path, $arg) {
  * Implements hook_form_alter(). 
  */
 function drupal_ace_editor_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id == 'css_injector_edit') {
-    $form['css_text']['#type'] = 'text_format';
-    $form['css_text']['#format'] = 'css';
-  }
   if ($form_id == 'js_injector_edit') {
     $form['js_text']['#type'] = 'text_format';
     $form['js_text']['#format'] = 'javascript';
